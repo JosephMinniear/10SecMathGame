@@ -2,12 +2,19 @@ console.log('i brought my gears');
 $(document).ready(function(){
     var currentQuestion;
     var timeLeft = 10;
+    var score = 0;
     var interval;
+
+    var updateScore = function (amount) {
+        score += amount;
+        $('#score').text(score);
+    };
 
     var startGame = function() {
         if (!interval) {
             if (timeLeft === 0) {
                 updateTimeLeft(10);
+                updateScore(-score);
             }
             interval = setInterval(function () {
                 updateTimeLeft(-1);
@@ -48,6 +55,7 @@ $(document).ready(function(){
             renderNewQuestion();
             $('#user-input').val('');
             updateTimeLeft(+1);
+            updateScore(+1);
         }
     }
 
