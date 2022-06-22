@@ -1,6 +1,23 @@
 console.log('i brought my gears');
 $(document).ready(function(){
     var currentQuestion;
+    var timeLeft = 10;
+    var interval;
+
+    var startGame = function() {
+        if (!interval) {
+            if (timeLeft === 0) {
+                updateTimeLeft(10);
+            }
+            interval = setInterval(function () {
+                updateTimeLeft(-1);
+                if (timeLeft === 0) {
+                    clearInterval(interval);
+                    interval = undefined;
+                }
+            }, 1000); 
+        }
+    }
 
     var randomNumberGenerator = function (size) {
         return Math.ceil(Math.random() * size);
@@ -16,9 +33,11 @@ $(document).ready(function(){
 
         return question;
     }
-
-    currentQuestion = questionGenerator();
-    $('#equation').text(currentQuestion.equation);
+    
+    var updateTimeLeft = function (amount) {
+        timeLeft += amount;
+        $('#time-left').text(timeLeft);
+    }
 
     var renderNewQuestion = function (){
         currentQuestion = questionGenerator();
@@ -28,12 +47,15 @@ $(document).ready(function(){
         if(userInput === answer) {
             renderNewQuestion();
             $('#user-input').val('');
+            updateTimeLeft(+1);
         }
     }
 
     $('#user-input').on('keyup', function() {
+        startGame();
         checkAnswer(Number($(this).val()), currentQuestion.answer);
     });
 
     renderNewQuestion();
+
 });
